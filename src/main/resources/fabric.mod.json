@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "messentials",
+	"version": "${version}",
+	"name": "mEssentials",
+	"description": "Adds some essential commands needed for minecraft multiplayer server's (/spawn, /back, home)",
+	"authors": [
+		"Momo"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/messentials/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.momo.messentials.MEssentials"
+		],
+		"client": [
+			"com.momo.messentials.MEssentialsClient"
+		]
+	},
+	"mixins": [
+		"messentials.mixins.json",
+		{
+			"config": "messentials.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.12",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
