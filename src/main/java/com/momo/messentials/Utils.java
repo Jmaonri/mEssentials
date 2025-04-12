@@ -1,11 +1,13 @@
 package com.momo.messentials;
 
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import java.util.Objects;
 
 public class Utils {
     /**
@@ -22,5 +24,9 @@ public class Utils {
         Identifier dimensionId = Identifier.tryParse(dimension);
         RegistryKey<World> worldKey = RegistryKey.of(RegistryKeys.WORLD, dimensionId);
         return server.getWorld(worldKey);
+    }
+
+    public static ServerWorld GetOverworld(ServerPlayerEntity player) throws NullPointerException{
+        return Objects.requireNonNull(player.getServer()).getWorld(World.OVERWORLD);
     }
 }
