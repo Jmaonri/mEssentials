@@ -1,34 +1,47 @@
 package com.momo.messentials;
 
-import com.momo.messentials.controller.PlayerHomeController;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.momo.messentials.controller.CommandController;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import com.momo.messentials.module.ControllerModule;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.CommandManager;
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Formatting;
+import net.minecraft.text.Text;
 import java.util.HashMap;
 
 public class Router {
 
     @FunctionalInterface
     interface CommandHandler {
-        int handle(CommandContext<ServerCommandSource> commandContext);
+        int execute(ServerPlayerEntity player, ServerWorld overworld, CommandContext<ServerCommandSource> commandContext);
+        default int handle(CommandContext<ServerCommandSource> commandContext) {
+            try{
+                ServerPlayerEntity player = commandContext.getSource().getPlayer();
+                if(player == null) return 0;
+
+                ServerWorld world = Utils.GetOverworld(player);
+                return execute(player, world, commandContext);
+            } catch (Exception e){
+                commandContext.getSource().sendError(Text.literal("Could not get player from context.").formatted(Formatting.RED));
+            }
+
+            return 0;
+        }
     }
 
     // HashMap containing all registered routes.
     private final HashMap<String, CommandHandler> routes = new HashMap<>();
 
     // Register command routes here.
-    public Router() {
-        CommandController commandController = new CommandController();
-        PlayerHomeController playerHomeController = new PlayerHomeController();
+    public Router(ControllerModule controllerModule) {
+        routes.put("spawn", controllerModule.commandController::HandleSpawnCommand);
+        routes.put("back", controllerModule.commandController::HandleBackCommand);
 
-        routes.put("spawn", commandController::HandleSpawnCommand);
-        routes.put("back", commandController::HandleBackCommand);
-
-        routes.put("home", playerHomeController::TeleportPlayerToHome);
-        routes.put("home.set", playerHomeController::SetPlayerHome);
+        routes.put("home", controllerModule.playerHomeController::TeleportPlayerToHome);
+        routes.put("home.set", controllerModule.playerHomeController::SetPlayerHome);
     }
 
     /**
