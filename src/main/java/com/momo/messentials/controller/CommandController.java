@@ -4,7 +4,7 @@ import com.momo.messentials.state.PreviousPlayerLocationState;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import com.mojang.brigadier.context.CommandContext;
-import com.momo.messentials.data.LastLocationData;
+import com.momo.messentials.data.PreviousPlayerLocationData;
 import com.momo.messentials.service.PlayerService;
 import net.minecraft.server.world.ServerWorld;
 import exception.NoLocationSavedException;
@@ -60,7 +60,7 @@ public class CommandController {
         try {
             ServerWorld serverWorld = Objects.requireNonNull(player.getServer()).getWorld(World.OVERWORLD);
             PreviousPlayerLocationState state = new PreviousPlayerLocationState().get(Objects.requireNonNull(serverWorld).getPersistentStateManager());
-            LastLocationData playerLastLocation = state.getPlayerLocation(player.getUuid());
+            PreviousPlayerLocationData playerLastLocation = state.getPlayerLocation(player.getUuid());
 
             state.setPlayerLocation(player);
 

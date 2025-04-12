@@ -2,7 +2,7 @@ package com.momo.messentials.state;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.PersistentStateManager;
-import com.momo.messentials.data.LastLocationData;
+import com.momo.messentials.data.PreviousPlayerLocationData;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.PersistentState;
 import exception.NoLocationSavedException;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class PreviousPlayerLocationState extends PersistentState {
     // HashMap containing all last location's homes.
-    private final Map<UUID, LastLocationData> previousPlayerLocations = new HashMap<>();
+    private final Map<UUID, PreviousPlayerLocationData> previousPlayerLocations = new HashMap<>();
     // The name under which the player last location nbt data is saved.
     private final String NbtKeyName = "players_last_locations";
 
@@ -31,7 +31,7 @@ public class PreviousPlayerLocationState extends PersistentState {
     @Override
     public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
         NbtList list = new NbtList();
-        for (Map.Entry<UUID, LastLocationData> entry : previousPlayerLocations.entrySet()) {
+        for (Map.Entry<UUID, PreviousPlayerLocationData> entry : previousPlayerLocations.entrySet()) {
             NbtCompound tag = new NbtCompound();
 
             tag.putString("player_dimension", entry.getValue().dimension);
@@ -59,7 +59,7 @@ public class PreviousPlayerLocationState extends PersistentState {
     public void setPlayerLocation(ServerPlayerEntity player) {
         var pos = player.getPos();
         String dimension = player.getWorld().getRegistryKey().getValue().toString();
-        previousPlayerLocations.put(player.getUuid(), new LastLocationData((int) pos.x, (int) pos.y, (int) pos.z, dimension, player.getYaw(), player.getPitch()));
+        previousPlayerLocations.put(player.getUuid(), new PreviousPlayerLocationData((int) pos.x, (int) pos.y, (int) pos.z, dimension, player.getYaw(), player.getPitch()));
         markDirty();
     }
 
@@ -72,7 +72,7 @@ public class PreviousPlayerLocationState extends PersistentState {
      * @return The saved last location data for the player.
      * @throws NoLocationSavedException If no location is found for the provided player UUID.
      */
-    public LastLocationData getPlayerLocation(UUID uuid) throws NoLocationSavedException {
+    public PreviousPlayerLocationData getPlayerLocation(UUID uuid) throws NoLocationSavedException {
         if(!previousPlayerLocations.containsKey(uuid)) throw new NoLocationSavedException("There is no saved previous location for provided user uuid.");
         return previousPlayerLocations.get(uuid);
     }
@@ -104,7 +104,7 @@ public class PreviousPlayerLocationState extends PersistentState {
             int y = compound.getInt("y_coordinate");
             int z = compound.getInt("z_coordinate");
 
-            state.previousPlayerLocations.put(uuid, new LastLocationData(x, y, z, dimension, yaw, pitch));
+            state.previousPlayerLocations.put(uuid, new PreviousPlayerLocationData(x, y, z, dimension, yaw, pitch));
         }
 
         return state;
