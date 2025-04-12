@@ -1,8 +1,9 @@
 package com.momo.messentials.state;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.PersistentStateManager;
 import com.momo.messentials.data.PreviousPlayerLocationData;
+import net.minecraft.server.network.ServerPlayerEntity;
+import com.momo.messentials.interfaces.StateInterface;
+import net.minecraft.world.PersistentStateManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.PersistentState;
 import exception.NoLocationSavedException;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map;
 
-public class PreviousPlayerLocationState extends PersistentState {
+public class PreviousPlayerLocationState extends PersistentState implements StateInterface {
     // HashMap containing all last location's homes.
     private final Map<UUID, PreviousPlayerLocationData> previousPlayerLocations = new HashMap<>();
     // The name under which the player last location nbt data is saved.
@@ -152,4 +153,3 @@ public class PreviousPlayerLocationState extends PersistentState {
         return serverState.getOrCreate(type, NbtKeyName);
     }
 }
-

@@ -1,6 +1,7 @@
 package com.momo.messentials.state;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import com.momo.messentials.interfaces.StateInterface;
 import net.minecraft.world.PersistentStateManager;
 import com.momo.messentials.data.PlayerHomeData;
 import net.minecraft.registry.RegistryWrapper;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map;
 
-public class PlayerHomeState extends PersistentState{
+public class PlayerHomeState extends PersistentState implements StateInterface {
     // HashMap containing all players homes.
     private final Map<UUID, PlayerHomeData> playerHomes = new HashMap<>();
     // The name under which the player home nbt data is saved.
