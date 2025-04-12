@@ -1,6 +1,9 @@
 package com.momo.messentials;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import com.momo.messentials.module.ControllerModule;
+import com.momo.messentials.module.ServiceModule;
+import com.momo.messentials.module.StateModule;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -24,7 +27,11 @@ public class MEssentials implements ModInitializer {
 					registryAccess,
 					environment
 			) -> {
-				Router router = new Router();
+				StateModule stateModule = new StateModule();
+				ServiceModule serviceModule = new ServiceModule(stateModule);
+				ControllerModule controllerModule = new ControllerModule(serviceModule);
+
+				Router router = new Router(controllerModule);
 				router.RegisterCommandRoutes(dispatcher);
 			});
 		} catch (Exception e) {
